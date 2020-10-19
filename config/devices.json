@@ -1,0 +1,32 @@
+[
+	{
+		"bstack:options": {
+			"osVersion": "12",
+			"deviceName": "iPhone 8 Plus",
+			"realMobile": "true",
+			"projectName": "Tech Product on-boarding",
+			"buildName": "DemoJS",
+			"sessionName": "NodeJs iPhone test",
+			"local": "false",
+			"debug": "true",
+			"networkLogs": "true",
+			"networkProfile": "4g-lte-good",
+			"deviceOrientation": "landscape",
+			"consoleLogs": "verbose"
+		},
+		"browserName": "iPhone"
+	},
+	{
+		"bstack:options": {
+			"osVersion": "10.0",
+			"deviceName": "OnePlus 8",
+			"realMobile": "true",
+			"projectName": "Tech Product on-boarding",
+			"buildName": "DemoJS",
+			"sessionName": "NodeJs Android test",
+			"local": "false",
+			"geoLocation": "US"
+		},
+		"browserName": "Android"
+	}
+]
