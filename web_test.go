@@ -4,7 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"net/http"
 	"os"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -12,6 +14,7 @@ import (
 )
 
 func TestSingle(test *testing.T) {
+	test.Parallel()
 	asserter := assert.New(test)
 	caps := selenium.Capabilities{
 		"bstack:options": map[string]interface{}{
@@ -42,6 +45,7 @@ func TestSingle(test *testing.T) {
 
 func TestParallel(test *testing.T) {
 	// asserter := assert.New(test)
+	test.Parallel()
 	var capabilities []map[string]interface{}
 	fileData, _ := ioutil.ReadFile("./config/browsers.json")
 	json.Unmarshal(fileData, &capabilities)
@@ -65,4 +69,59 @@ func TestParallel(test *testing.T) {
 			asserter.Contains(title, "Google", "Title should contain Google")
 		})
 	}
+}
+
+func TestSingleAndMarkStatus(test *testing.T) {
+	test.Parallel()
+	asserter := assert.New(test)
+	caps := selenium.Capabilities{
+		"bstack:options": map[string]interface{}{
+			"os":              "Windows",
+			"osVersion":       "10",
+			"local":           "false",
+			"seleniumVersion": "4.0.0-alpha-6",
+			"projectName":     "BrowserStack",
+			"buildName":       "Demo-GoLang",
+			"sessionName":     "GoLang Firefox Test",
+		},
+		"browserName":    "Firefox",
+		"browserVersion": "latest",
+	}
+	wd, err := selenium.NewRemote(caps, fmt.Sprintf("https://%s:%s@hub-cloud.browserstack.com/wd/hub", os.Getenv("BROWSERSTACK_USERNAME"), os.Getenv("BROWSERSTACK_ACCESSKEY")))
+	if err != nil {
+		test.Fatal(err)
+	}
+
+	test.Cleanup(func() {
+		sessionID := wd.SessionId()
+		wd.Quit()
+		test.Log(sessionID)
+		var req *http.Request
+		if test.Failed() {
+			req, err = http.NewRequest(http.MethodPut, fmt.Sprintf("https://api.browserstack.com/automate/sessions/%s.json", sessionID), strings.NewReader(`{"status":"failed", "reason":"failed all tests"}`))
+			if err != nil {
+				test.Fatal(err)
+			}
+		} else {
+			req, err = http.NewRequest(http.MethodPut, fmt.Sprintf("https://api.browserstack.com/automate/sessions/%s.json", sessionID), strings.NewReader(`{"status":"passed", "reason":"passed all tests"}`))
+			if err != nil {
+				test.Fatal(err)
+			}
+		}
+		req.SetBasicAuth(os.Getenv("BROWSERSTACK_USERNAME"), os.Getenv("BROWSERSTACK_ACCESSKEY"))
+		req.Header.Set("Content-Type", "application/json")
+		client := &http.Client{}
+		_, err := client.Do(req)
+		if err != nil {
+			test.Fatal(err)
+		}
+	})
+
+	wd.Get("https://google.com")
+	title, titleErr := wd.Title()
+	if titleErr != nil {
+		test.Error(titleErr)
+	}
+	test.Log("Title Received:", title)
+	asserter.Contains(title, "Google", "Title should contain google")
 }

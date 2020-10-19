@@ -9,3 +9,6 @@ single:
 
 parallel:
 	go test -v -run TestParallel
+
+markStatus:
+	go test -v -run TestSingleAndMarkStatus
