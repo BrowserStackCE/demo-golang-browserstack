@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Localhost -</title>
+		<style>
+			body {
+				max-width: 500px;
+				padding: 0.5rem;
+			}
+			table {
+				font-family: arial, sans-serif;
+				border-collapse: collapse;
+				margin: 2rem;
+			}
+
+			td,
+			th {
+				border: 1px solid #dddddd;
+				text-align: left;
+				padding: 8px;
+			}
+			thead td {
+				background-color: lightgray;
+			}
+		</style>
+
+		<!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha2/css/bootstrap.min.css"
+			integrity="sha384-DhY6onE6f3zzKbjUPRc2hOzGAdEf4/Dz+WJwBvEYL/lkkIsI3ihufq9hk9K4lVoK" crossorigin="anonymous">
+		<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha2/js/bootstrap.bundle.min.js"
+			integrity="sha384-BOsAfwzjNJHrJ8cZidOg56tcQWfp6y72vEJ8xQ9w6Quywb24iOsW913URv1IS4GD"
+			crossorigin="anonymous"></script> -->
+	</head>
+	<body>
+		<h1>Welcome to the local website!!</h1>
+		<p>
+			Lorem, ipsum dolor sit amet consectetur adipisicing elit. Deserunt ut non
+			alias vitae cupiditate consequuntur quibusdam dolor amet neque ipsum! Et
+			fugiat labore nemo explicabo quidem iure possimus deserunt unde.
+		</p>
+		<table class="table table-dark table-stripped table-hover">
+			<thead>
+				<tr>
+					<td>Property</td>
+					<td>Sub Property</td>
+					<td>Value</td>
+				</tr>
+			</thead>
+			<tbody>
+				<tr class="os">
+					<td rowspan="2">OS</td>
+					<td>Name</td>
+					<td class="name"></td>
+				</tr>
+				<tr class="os">
+					<td>Version</td>
+					<td class="version"></td>
+				</tr>
+				<tr class="browser">
+					<td rowspan="2">Browser</td>
+					<td>Name</td>
+					<td class="name"></td>
+				</tr>
+				<tr class="browser">
+					<td>Version</td>
+					<td class="version"></td>
+				</tr>
+			</tbody>
+		</table>
+
+		<footer>
+			Credits:
+			<ul>
+				<li>
+					<a
+						href="https://medium.com/creative-technology-concepts-code/detect-device-browser-and-version-using-javascript-8b511906745"
+						target="__blank"
+						>How to extract device information</a
+					>
+				</li>
+			</ul>
+		</footer>
+		<script>
+			let module = {
+				options: [],
+				header: [
+					navigator.platform,
+					navigator.userAgent,
+					navigator.appVersion,
+					navigator.vendor,
+					window.opera,
+				],
+				dataos: [
+					{ name: "Windows Phone", value: "Windows Phone", version: "OS" },
+					{ name: "Windows", value: "Win", version: "NT" },
+					{ name: "iPhone", value: "iPhone", version: "OS" },
+					{ name: "iPad", value: "iPad", version: "OS" },
+					{ name: "Kindle", value: "Silk", version: "Silk" },
+					{ name: "Android", value: "Android", version: "Android" },
+					{ name: "PlayBook", value: "PlayBook", version: "OS" },
+					{ name: "BlackBerry", value: "BlackBerry", version: "/" },
+					{ name: "Macintosh", value: "Mac", version: "OS X" },
+					{ name: "Linux", value: "Linux", version: "rv" },
+					{ name: "Palm", value: "Palm", version: "PalmOS" },
+				],
+				databrowser: [
+					{ name: "Chrome", value: "Chrome", version: "Chrome" },
+					{ name: "Firefox", value: "Firefox", version: "Firefox" },
+					{ name: "Safari", value: "Safari", version: "Version" },
+					{ name: "Internet Explorer", value: "MSIE", version: "MSIE" },
+					{ name: "Opera", value: "Opera", version: "Opera" },
+					{ name: "BlackBerry", value: "CLDC", version: "CLDC" },
+					{ name: "Mozilla", value: "Mozilla", version: "Mozilla" },
+				],
+				init: function () {
+					var agent = this.header.join(" "),
+						os = this.matchItem(agent, this.dataos),
+						browser = this.matchItem(agent, this.databrowser);
+
+					return { os: os, browser: browser };
+				},
+				matchItem: function (string, data) {
+					var i = 0,
+						j = 0,
+						html = "",
+						regex,
+						regexv,
+						match,
+						matches,
+						version;
+
+					for (i = 0; i < data.length; i += 1) {
+						regex = new RegExp(data[i].value, "i");
+						match = regex.test(string);
+						if (match) {
+							regexv = new RegExp(data[i].version + "[- /:;]([\\d._]+)", "i");
+							matches = string.match(regexv);
+							version = "";
+							if (matches) {
+								if (matches[1]) {
+									matches = matches[1];
+								}
+							}
+							if (matches) {
+								matches = matches.split(/[._]+/);
+								for (j = 0; j < matches.length; j += 1) {
+									if (j === 0) {
+										version += matches[j] + ".";
+									} else {
+										version += matches[j];
+									}
+								}
+							} else {
+								version = "0";
+							}
+							return {
+								name: data[i].name,
+								version: parseFloat(version),
+							};
+						}
+					}
+					return { name: "unknown", version: 0 };
+				},
+			};
+
+			let info = module.init();
+			document.title += " " + info.browser.name;
+
+			document.querySelector(".browser .name").innerHTML = info.browser.name;
+			document.querySelector(".browser .version").innerHTML =
+				info.browser.version;
+
+			document.querySelector(".os .name").innerHTML = info.os.name;
+			document.querySelector(".os .version").innerHTML = info.os.version;
+		</script>
+	</body>
+</html>
