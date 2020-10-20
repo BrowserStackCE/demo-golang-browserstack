@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"strings"
+	"syscall"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -93,7 +94,7 @@ func TestSingleAndMarkStatus(test *testing.T) {
 	}
 
 	test.Cleanup(func() {
-		sessionID := wd.SessionId()
+		sessionID := wd.SessionID()
 		wd.Quit()
 		test.Log(sessionID)
 		var req *http.Request
@@ -124,4 +125,56 @@ func TestSingleAndMarkStatus(test *testing.T) {
 	}
 	test.Log("Title Received:", title)
 	asserter.Contains(title, "Google", "Title should contain google")
+}
+
+func TestLocal(test *testing.T) {
+	test.Parallel()
+	// Starting local binary
+	bslocalCmd := StartLocal() // defined in local.go
+	test.Cleanup(func() {
+		syscall.Kill(-bslocalCmd.Process.Pid, syscall.SIGKILL)
+	})
+
+	fileServer := &http.Server{
+		Addr:    "localhost:8080",
+		Handler: http.FileServer(http.Dir("./website")),
+	}
+	go fileServer.ListenAndServe()
+	test.Cleanup(func() { fileServer.Close() })
+
+	test.Log("Server started")
+
+	caps := selenium.Capabilities{
+		"bstack:options": map[string]interface{}{
+			"os":              "Windows",
+			"osVersion":       "10",
+			"seleniumVersion": "4.0.0-alpha-6",
+			"projectName":     "BrowserStack",
+			"buildName":       "Demo-GoLang",
+			"sessionName":     "GoLang Firefox Test",
+			"local":           "true",
+		},
+		"browserName":    "Firefox",
+		"browserVersion": "latest",
+	}
+	// time.Sleep(1 * time.Minute)
+	wd, err := selenium.NewRemote(caps, fmt.Sprintf("https://%s:%s@hub-cloud.browserstack.com/wd/hub", os.Getenv("BROWSERSTACK_USERNAME"), os.Getenv("BROWSERSTACK_ACCESSKEY")))
+	if err != nil {
+		test.Fatal(err)
+	}
+	test.Cleanup(func() {
+		wd.Quit()
+	})
+
+	asserter := assert.New(test)
+	wd.Get("http://localhost:8080")
+	osElement, err := wd.FindElement(selenium.ByCSSSelector, ".os .name")
+	if err != nil {
+		test.Error(err)
+	}
+	osVal, err := osElement.Text()
+	if err != nil {
+		test.Error(err)
+	}
+	asserter.Equal(osVal, "Windows", "OS for the local run should be Windows")
 }

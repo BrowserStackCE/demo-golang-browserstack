@@ -12,3 +12,6 @@ parallel:
 
 markStatus:
 	go test -v -run TestSingleAndMarkStatus
+
+local:
+	go test -v -run TestLocal
