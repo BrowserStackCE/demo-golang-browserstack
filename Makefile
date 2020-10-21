@@ -15,3 +15,6 @@ markStatus:
 
 local:
 	go test -v -run TestLocal
+
+test-status:
+	go test -v -run TestSingleAndMarkStatus
