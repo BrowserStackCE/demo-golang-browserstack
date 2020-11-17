@@ -165,7 +165,7 @@ func TestLocal(test *testing.T) {
 		"browserVersion": "latest",
 	}
 	// time.Sleep(1 * time.Minute)
-	wd, err := selenium.NewRemote(caps, fmt.Sprintf("https://%s:%s@hub-cloud.browserstack.com/wd/hub", os.Getenv("BROWSERSTACK_USERNAME"), os.Getenv("BROWSERSTACK_ACCESSKEY")))
+	wd, err := selenium.NewRemote(caps, fmt.Sprintf("https://%s:%s@hub-cloud.browserstack.com/wd/hub", os.Getenv("BROWSERSTACK_USERNAME"), os.Getenv("BROWSERSTACK_ACCESS_KEY")))
 	if err != nil {
 		test.Fatal(err)
 	}

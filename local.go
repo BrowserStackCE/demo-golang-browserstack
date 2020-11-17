@@ -16,7 +16,7 @@ type BrowserStackLocal exec.Cmd
 
 // StartLocal is to start the BS Local from binary
 func (bslocal *BrowserStackLocal) StartLocal() error {
-	bslocalCmd := exec.Command("BrowserStackLocal", "--key", os.Getenv("BROWSERSTACK_ACCESSKEY"), "--local-identifier", "demo")
+	bslocalCmd := exec.Command("BrowserStackLocal", "--key", os.Getenv("BROWSERSTACK_ACCESS_KEY"), "--local-identifier", "demo")
 	// bslocalCmd := exec.Command("BrowserStackLocal", "--key", os.Getenv("BROWSERSTACK_ACCESSKEY"))
 	bslocalCmd.SysProcAttr = &syscall.SysProcAttr{Setpgid: true}
 	pr, pw := io.Pipe()
