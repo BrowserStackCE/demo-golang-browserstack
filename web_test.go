@@ -143,7 +143,7 @@ func TestLocal(test *testing.T) {
 	// Starting local binary
 
 	fileServer := &http.Server{
-		Addr:    ":8080",
+		Addr:    ":8000",
 		Handler: http.FileServer(http.Dir("./website")),
 	}
 	go fileServer.ListenAndServe()
@@ -165,7 +165,7 @@ func TestLocal(test *testing.T) {
 		"browserName":    "Firefox",
 		"browserVersion": "latest",
 	}
-	time.Sleep(1 * time.Minute)
+	// time.Sleep(1 * time.Minute)
 	wd, err := selenium.NewRemote(caps, fmt.Sprintf("https://%s:%s@hub-cloud.browserstack.com/wd/hub", os.Getenv("BROWSERSTACK_USERNAME"), os.Getenv("BROWSERSTACK_ACCESS_KEY")))
 	if err != nil {
 		test.Fatal(err)
@@ -175,7 +175,8 @@ func TestLocal(test *testing.T) {
 	})
 
 	asserter := assert.New(test)
-	wd.Get("http://localhost:8080")
+	wd.Get("http://localhost:8000")
+	time.Sleep(5 * time.Second)
 	osElement, err := wd.FindElement(selenium.ByCSSSelector, ".os .name")
 	if err != nil {
 		test.Error(err)
