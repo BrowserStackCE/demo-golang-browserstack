@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"os"
 	"strings"
-	"syscall"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -129,14 +128,21 @@ func TestSingleAndMarkStatus(test *testing.T) {
 
 func TestLocal(test *testing.T) {
 	test.Parallel()
+	if os.Getenv("JENKINS_ENV") == "" {
+		var bslocalCmd BrowserStackLocal
+		err := bslocalCmd.StartLocal() // defined in local.go
+		if err != nil {
+			test.Fatal(err.Error())
+		}
+		test.Cleanup(func() {
+			bslocalCmd.StopLocal()
+		})
+		os.Setenv("BROWSERSTACK_LOCAL_IDENTIFIER", "demo")
+	}
 	// Starting local binary
-	bslocalCmd := StartLocal() // defined in local.go
-	test.Cleanup(func() {
-		syscall.Kill(-bslocalCmd.Process.Pid, syscall.SIGKILL)
-	})
 
 	fileServer := &http.Server{
-		Addr:    "localhost:8080",
+		Addr:    ":8080",
 		Handler: http.FileServer(http.Dir("./website")),
 	}
 	go fileServer.ListenAndServe()
@@ -153,6 +159,7 @@ func TestLocal(test *testing.T) {
 			"buildName":       "Demo-GoLang",
 			"sessionName":     "GoLang Firefox Test",
 			"local":           "true",
+			"localIdentifier": os.Getenv("BROWSERSTACK_LOCAL_IDENTIFIER"),
 		},
 		"browserName":    "Firefox",
 		"browserVersion": "latest",
