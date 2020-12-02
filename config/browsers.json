@@ -16,7 +16,7 @@
 			"geoLocation": "US"
 		},
 		"browserName": "Firefox",
-		"browserVersion": "80.0"
+		"browserVersion": "latest"
 	},
 	{
 		"bstack:options": {
@@ -25,14 +25,14 @@
 			"resolution": "1920x1080",
 			"projectName": "BrowserStack",
 			"buildName": "Demo-GoLang",
-			"sessionName": "GoLang Firefox Test",
+			"sessionName": "GoLang Chrome Test",
 			"local": "false",
 			"debug": "true",
 			"consoleLogs": "disable",
 			"seleniumVersion": "3.14.0"
 		},
 		"browserName": "Chrome",
-		"browserVersion": "84.0"
+		"browserVersion": "latest"
 	},
 	{
 		"bstack:options": {
@@ -41,7 +41,7 @@
 			"resolution": "1920x1080",
 			"projectName": "BrowserStack",
 			"buildName": "Demo-GoLang",
-			"sessionName": "GoLang Firefox Test",
+			"sessionName": "GoLang Safari Test",
 			"local": "false",
 			"debug": "true",
 			"consoleLogs": "disable",
@@ -57,7 +57,7 @@
 			"resolution": "2048x1536",
 			"projectName": "BrowserStack",
 			"buildName": "Demo-GoLang",
-			"sessionName": "GoLang Firefox Test",
+			"sessionName": "GoLang Edge Test",
 			"local": "false",
 			"debug": "true",
 			"consoleLogs": "disable",

@@ -1,8 +1,7 @@
-test:
-	go test -v ./...
+default: all
 
-testReport:
-	go test -v ./... | go-junit-report > report.xml
+all:
+	go test -v ./...
 
 single:
 	go test -v -run TestSingle
@@ -10,11 +9,5 @@ single:
 parallel:
 	go test -v -run TestParallel
 
-markStatus:
-	go test -v -run TestSingleAndMarkStatus
-
 local:
 	go test -v -run TestLocal
-
-test-status:
-	go test -v -run TestSingleAndMarkStatus

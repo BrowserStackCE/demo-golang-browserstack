@@ -39,9 +39,5 @@ make parallel
 # run local test
 make local # it will start a local file server, serving the web pages hosted in website folder
 # run all tests
-make test
-# run a test and mark it's status as pass or fail
-make test-status
-# run all tests and generate tests reports in junit-reporter
-make testReport
+make all
 ```
