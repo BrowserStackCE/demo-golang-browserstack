@@ -1,33 +1,33 @@
-
-  
 ## Demo-GoLang-BrowserStack <img src="https://golang.org/lib/godoc/images/go-logo-blue.svg" height="22"> <img src="https://camo.githubusercontent.com/799a5c97a4d00394703cf20a5de308784c5454c05726b4c6ba559397644e58d2/68747470733a2f2f643938623874316e6e756c6b352e636c6f756466726f6e742e6e65742f70726f64756374696f6e2f696d616765732f6c61796f75742f6c6f676f2d6865616465722e706e673f31343639303034373830" height="22">
+
 ---
 
 This repository contains sample tests to run on the BrowserStack Infrastructure using Selenium and GoLang.
 
 ### Setup
 
-* Install the following necessary packages using command line (refer below for performing local testing):
+- Install the following necessary packages using command line (refer below for performing local testing):
 
-    ```sh
-    # install selenium client bindings for go-lang
-    go get github.com/tebeka/selenium
-    # install asserters
-    go get github.com/stretchr/testify
+  ```sh
+  # install selenium client bindings for go-lang
+  go get github.com/tebeka/selenium
+  # install asserters
+  go get github.com/stretchr/testify
 
-    # OR install all the dependencies using
+  # OR install all the dependencies using
 
-    go get -v ./...
-    go install ./...
-    ```
-    > <small>Note: This step is entirely optional as go automatically downloads missing dependencies while running or building the programs</small>
+  go get -v ./...
+  go install ./...
+  ```
 
-* Export the environment variables for the Username and Access Key of your BrowserStack account
-  
-    ```sh
-    export BROWSERSTACK_USERNAME=<browserstack-username> &&
-    export BROWSERSTACK_ACCESS_KEY=<browserstack-access-key>
-    ```
+  > <small>Note: This step is entirely optional as go automatically downloads missing dependencies while running or building the programs</small>
+
+- Export the environment variables for the Username and Access Key of your BrowserStack account
+
+  ```sh
+  export BROWSERSTACK_USERNAME=<browserstack-username> &&
+  export BROWSERSTACK_ACCESS_KEY=<browserstack-access-key>
+  ```
 
 > NOTE: If you are not using \*nix based systems you may also need to install `make` command to run the commands given below from [here](https://stackoverflow.com/questions/32127524/how-to-install-and-use-make-in-windows). You can also refer to the [make file](Makefile) and directly copy test commands for eg command to run single web tests `go test -v -run TestSingle`
 
