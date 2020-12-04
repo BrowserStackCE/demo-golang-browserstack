@@ -6,13 +6,8 @@
 			"realMobile": "true",
 			"projectName": "BrowserStack",
 			"buildName": "Demo-GoLang",
-			"sessionName": "NodeJs iPhone test",
-			"local": "false",
-			"debug": "true",
-			"networkLogs": "true",
-			"networkProfile": "4g-lte-good",
-			"deviceOrientation": "landscape",
-			"consoleLogs": "verbose"
+			"sessionName": "GoLang iPhone 8 Test",
+			"local": "false"
 		},
 		"browserName": "iPhone"
 	},
@@ -23,9 +18,8 @@
 			"realMobile": "true",
 			"projectName": "BrowserStack",
 			"buildName": "Demo-GoLang",
-			"sessionName": "NodeJs Android test",
-			"local": "false",
-			"geoLocation": "US"
+			"sessionName": "GoLang OnePlus 8 Test",
+			"local": "false"
 		},
 		"browserName": "Android"
 	}

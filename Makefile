@@ -11,3 +11,6 @@ parallel:
 
 local:
 	go test -v -run TestLocal
+
+mobile:
+	go test -v -run Mobile
