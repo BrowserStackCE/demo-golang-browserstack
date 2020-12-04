@@ -22,7 +22,7 @@ func TestSingle(test *testing.T) {
 			"osVersion":       "10",
 			"local":           "false",
 			"seleniumVersion": "4.0.0-alpha-6",
-			"projectName":     "BrowserStack",
+			"projectName":     "BrowserStack GoLang",
 			"buildName":       "Demo-GoLang",
 			"sessionName":     "GoLang Firefox Test Single",
 			"debug":           "true",
@@ -95,69 +95,6 @@ func TestParallel(test *testing.T) {
 	}
 }
 
-func TestLocal(test *testing.T) {
-	test.Parallel()
-	if os.Getenv("JENKINS_ENV") == "" {
-		var bslocalCmd BrowserStackLocal
-		err := bslocalCmd.StartLocal() // defined in local.go
-		if err != nil {
-			test.Fatal(err.Error())
-		}
-		test.Cleanup(func() {
-			bslocalCmd.StopLocal()
-		})
-		os.Setenv("BROWSERSTACK_LOCAL_IDENTIFIER", "demo")
-	}
-	// Starting local binary
-
-	fileServer := &http.Server{
-		Addr:    ":4000",
-		Handler: http.FileServer(http.Dir("./website")),
-	}
-	go fileServer.ListenAndServe()
-	test.Cleanup(func() { fileServer.Close() })
-
-	test.Log("Server started")
-
-	caps := selenium.Capabilities{
-		"bstack:options": map[string]interface{}{
-			"os":              "Windows",
-			"osVersion":       "10",
-			"seleniumVersion": "4.0.0-alpha-6",
-			"projectName":     "BrowserStack",
-			"buildName":       "Demo-GoLang",
-			"sessionName":     "GoLang Firefox Test Local",
-			"local":           "true",
-			"localIdentifier": os.Getenv("BROWSERSTACK_LOCAL_IDENTIFIER"),
-		},
-		"browserName":    "Firefox",
-		"browserVersion": "latest",
-	}
-	wd, err := selenium.NewRemote(caps, fmt.Sprintf("https://%s:%s@hub-cloud.browserstack.com/wd/hub", os.Getenv("BROWSERSTACK_USERNAME"), os.Getenv("BROWSERSTACK_ACCESS_KEY")))
-	if err != nil {
-		test.Fatal(err)
-	}
-	test.Cleanup(func() {
-		wd.Quit()
-	})
-
-	asserter := assert.New(test)
-
-	wd.Get("http://localhost:4000")
-
-	osElement, err := wd.FindElement(selenium.ByCSSSelector, ".os .name")
-	if err != nil {
-		test.Fatal(err)
-	}
-
-	osVal, err := osElement.Text()
-	if err != nil {
-		test.Fatal(err)
-	}
-
-	asserter.Equal(osVal, "Windows", "OS for the local run should be Windows")
-}
-
 func TestFail(test *testing.T) {
 	if os.Getenv("FAIL_TEST") == "" {
 		test.SkipNow()
@@ -170,7 +107,7 @@ func TestFail(test *testing.T) {
 			"osVersion":       "10",
 			"local":           "false",
 			"seleniumVersion": "4.0.0-alpha-6",
-			"projectName":     "BrowserStack",
+			"projectName":     "BrowserStack GoLang",
 			"buildName":       "Demo-GoLang",
 			"sessionName":     "GoLang Firefox Test Fail",
 			"debug":           "true",

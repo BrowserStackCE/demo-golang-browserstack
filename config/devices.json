@@ -4,7 +4,7 @@
 			"osVersion": "12",
 			"deviceName": "iPhone 8 Plus",
 			"realMobile": "true",
-			"projectName": "BrowserStack",
+			"projectName": "BrowserStack GoLang",
 			"buildName": "Demo-GoLang",
 			"sessionName": "GoLang iPhone 8 Test",
 			"local": "false"
@@ -16,7 +16,7 @@
 			"osVersion": "10.0",
 			"deviceName": "OnePlus 8",
 			"realMobile": "true",
-			"projectName": "BrowserStack",
+			"projectName": "BrowserStack GoLang",
 			"buildName": "Demo-GoLang",
 			"sessionName": "GoLang OnePlus 8 Test",
 			"local": "false"

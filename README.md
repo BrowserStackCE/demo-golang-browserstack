@@ -2,6 +2,8 @@
 
 ---
 
+[![BrowserStack Status](https://automate.browserstack.com/badge.svg?badge_key=cTY2c2NMN2tPSzRJUUZNbFpXQ1doRGlhRVFrWG5KOXkzbmN1RTFMdjZNbz0tLUd6L1NDRkp4NHlhZ2UwYWphTytQWHc9PQ==--76e8689d99c05a6556cfaf5b48a2759865cfebd3)](https://automate.browserstack.com/public-build/cTY2c2NMN2tPSzRJUUZNbFpXQ1doRGlhRVFrWG5KOXkzbmN1RTFMdjZNbz0tLUd6L1NDRkp4NHlhZ2UwYWphTytQWHc9PQ==--76e8689d99c05a6556cfaf5b48a2759865cfebd3)
+
 This repository contains sample tests to run on the BrowserStack Infrastructure using Selenium and GoLang.
 
 ### Setup
@@ -44,8 +46,12 @@ To run tests on a website run anyone of the following commands:
 make single
 # run multiple tests in parallel
 make parallel
-# run local test
+# run local test on desktop and mobile browsers
 make local # it will start a local file server, serving the web pages hosted in website folder
+# run tests single and parallel tests on mobile browsers
+make mobile
 # run all tests
 make all
+# run a failed test
+make fail
 ```
