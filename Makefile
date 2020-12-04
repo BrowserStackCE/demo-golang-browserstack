@@ -1,6 +1,6 @@
 default: all
 
-all:
+all: 
 	go test -v ./...
 
 single:
@@ -14,3 +14,6 @@ local:
 
 mobile:
 	go test -v -run Mobile
+
+fail:
+	FAIL_TEST=true go test -v -run TestFail

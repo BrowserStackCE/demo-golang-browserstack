@@ -8,7 +8,6 @@ import (
 	"os"
 	"strings"
 	"testing"
-	// "time"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/tebeka/selenium"
@@ -26,6 +25,9 @@ func TestSingle(test *testing.T) {
 			"projectName":     "BrowserStack",
 			"buildName":       "Demo-GoLang",
 			"sessionName":     "GoLang Firefox Test Single",
+			"debug":           "true",
+			"networkLogs":     "true",
+			"consoleLogs":     "verbose",
 		},
 		"browserName":    "Firefox",
 		"browserVersion": "latest",
@@ -38,14 +40,12 @@ func TestSingle(test *testing.T) {
 	wd.Get("https://google.com")
 	title, titleErr := wd.Title()
 	if titleErr != nil {
-		test.Error(titleErr)
+		test.Fatal(titleErr)
 	}
-	test.Log("Title Received:", title)
 	asserter.Contains(title, "Google", "Title should contain google")
 }
 
 func TestParallel(test *testing.T) {
-	// asserter := assert.New(test)
 	test.Parallel()
 	var capabilities []map[string]interface{}
 	fileData, _ := ioutil.ReadFile("./config/browsers.json")
@@ -61,17 +61,17 @@ func TestParallel(test *testing.T) {
 			nestedTest.Cleanup(func() {
 				sessionID := wd.SessionID()
 				wd.Quit()
-				test.Log(sessionID)
+				nestedTest.Log(sessionID)
 				var req *http.Request
-				if test.Failed() {
+				if nestedTest.Failed() {
 					req, err = http.NewRequest(http.MethodPut, fmt.Sprintf("https://api.browserstack.com/automate/sessions/%s.json", sessionID), strings.NewReader(`{"status":"failed", "reason":"failed all tests"}`))
 					if err != nil {
-						test.Fatal(err)
+						nestedTest.Fatal(err)
 					}
 				} else {
 					req, err = http.NewRequest(http.MethodPut, fmt.Sprintf("https://api.browserstack.com/automate/sessions/%s.json", sessionID), strings.NewReader(`{"status":"passed", "reason":"passed all tests"}`))
 					if err != nil {
-						test.Fatal(err)
+						nestedTest.Fatal(err)
 					}
 				}
 				req.SetBasicAuth(os.Getenv("BROWSERSTACK_USERNAME"), os.Getenv("BROWSERSTACK_ACCESSKEY"))
@@ -79,7 +79,7 @@ func TestParallel(test *testing.T) {
 				client := &http.Client{}
 				_, err := client.Do(req)
 				if err != nil {
-					test.Fatal(err)
+					nestedTest.Fatal(err)
 				}
 			})
 			nestedTest.Parallel() // adding here to run tests in parallel,
@@ -87,7 +87,7 @@ func TestParallel(test *testing.T) {
 			wd.Get("https://google.com")
 			title, titleErr := wd.Title()
 			if titleErr != nil {
-				nestedTest.Error(titleErr)
+				nestedTest.Fatal(titleErr)
 			}
 			nestedTest.Logf("Title Recieved: %s", title)
 			asserter.Contains(title, "Google", "Title should contain Google")
@@ -133,7 +133,6 @@ func TestLocal(test *testing.T) {
 		"browserName":    "Firefox",
 		"browserVersion": "latest",
 	}
-	// time.Sleep(30 * time.Second)
 	wd, err := selenium.NewRemote(caps, fmt.Sprintf("https://%s:%s@hub-cloud.browserstack.com/wd/hub", os.Getenv("BROWSERSTACK_USERNAME"), os.Getenv("BROWSERSTACK_ACCESS_KEY")))
 	if err != nil {
 		test.Fatal(err)
@@ -143,15 +142,60 @@ func TestLocal(test *testing.T) {
 	})
 
 	asserter := assert.New(test)
+
 	wd.Get("http://localhost:4000")
-	// time.Sleep(5 * time.Second)
+
 	osElement, err := wd.FindElement(selenium.ByCSSSelector, ".os .name")
 	if err != nil {
-		test.Error(err)
+		test.Fatal(err)
 	}
+
 	osVal, err := osElement.Text()
 	if err != nil {
-		test.Error(err)
+		test.Fatal(err)
 	}
+
 	asserter.Equal(osVal, "Windows", "OS for the local run should be Windows")
+}
+
+func TestFail(test *testing.T) {
+	if os.Getenv("FAIL_TEST") == "" {
+		test.SkipNow()
+	}
+	test.Parallel()
+	asserter := assert.New(test)
+	caps := selenium.Capabilities{
+		"bstack:options": map[string]interface{}{
+			"os":              "Windows",
+			"osVersion":       "10",
+			"local":           "false",
+			"seleniumVersion": "4.0.0-alpha-6",
+			"projectName":     "BrowserStack",
+			"buildName":       "Demo-GoLang",
+			"sessionName":     "GoLang Firefox Test Fail",
+			"debug":           "true",
+			"networkLogs":     "true",
+			"consoleLogs":     "verbose",
+		},
+		"browserName":    "Firefox",
+		"browserVersion": "latest",
+	}
+	wd, err := selenium.NewRemote(caps, fmt.Sprintf("https://%s:%s@hub-cloud.browserstack.com/wd/hub", os.Getenv("BROWSERSTACK_USERNAME"), os.Getenv("BROWSERSTACK_ACCESSKEY")))
+	if err != nil {
+		panic(err)
+	}
+	test.Cleanup(func() {
+		if test.Failed() {
+			wd.ExecuteScript("browserstack_executor: {\"action\": \"setSessionStatus\", \"arguments\": {\"status\":\"failed\"}}", nil)
+		} else {
+			wd.ExecuteScript("browserstack_executor: {\"action\": \"setSessionStatus\", \"arguments\": {\"status\":\"passed\"}}", nil)
+		}
+		wd.Quit()
+	})
+	wd.Get("https://google.com")
+	title, titleErr := wd.Title()
+	if titleErr != nil {
+		test.Fatal(titleErr)
+	}
+	asserter.Equal("Microsoft", title, "Title should have been Google")
 }
