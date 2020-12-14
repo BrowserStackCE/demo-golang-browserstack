@@ -36,13 +36,17 @@ func TestLocal(test *testing.T) {
 	test.Log("Server started")
 
 	test.Run("Desktop", func(webTest *testing.T) {
+		var buildName = "Demo-GoLang"
+		if os.Getenv("JENKINS_ENV") != "" {
+			buildName = os.Getenv("BROWSERSTACK_BUILD_NAME")
+		}
 		caps := selenium.Capabilities{
 			"bstack:options": map[string]interface{}{
 				"os":              "Windows",
 				"osVersion":       "10",
 				"seleniumVersion": "4.0.0-alpha-6",
 				"projectName":     "BrowserStack GoLang",
-				"buildName":       "Demo-GoLang",
+				"buildName":       buildName,
 				"sessionName":     "GoLang Firefox Test Local",
 				"local":           "true",
 				"localIdentifier": os.Getenv("BROWSERSTACK_LOCAL_IDENTIFIER"),
@@ -77,13 +81,17 @@ func TestLocal(test *testing.T) {
 	})
 
 	test.Run("Mobile", func(mobileTest *testing.T) {
+		var buildName = "Demo-GoLang"
+		if os.Getenv("JENKINS_ENV") != "" {
+			buildName = os.Getenv("BROWSERSTACK_BUILD_NAME")
+		}
 		caps := selenium.Capabilities{
 			"bstack:options": map[string]interface{}{
 				"osVersion":       "13",
 				"deviceName":      "iPhone XS",
 				"realMobile":      "true",
 				"projectName":     "BrowserStack GoLang",
-				"buildName":       "Demo-GoLang",
+				"buildName":       buildName,
 				"sessionName":     "GoLang iPhone XS Test Local",
 				"local":           "true",
 				"localIdentifier": os.Getenv("BROWSERSTACK_LOCAL_IDENTIFIER"),
