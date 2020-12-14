@@ -16,6 +16,10 @@ import (
 func TestSingle(test *testing.T) {
 	test.Parallel()
 	asserter := assert.New(test)
+	var buildName = "Demo-GoLang"
+	if os.Getenv("JENKINS_ENV") != "" {
+		buildName = os.Getenv("BROWSERSTACK_BUILD_NAME")
+	}
 	caps := selenium.Capabilities{
 		"bstack:options": map[string]interface{}{
 			"os":              "Windows",
@@ -23,7 +27,7 @@ func TestSingle(test *testing.T) {
 			"local":           "false",
 			"seleniumVersion": "4.0.0-alpha-6",
 			"projectName":     "BrowserStack GoLang",
-			"buildName":       "Demo-GoLang",
+			"buildName":       buildName,
 			"sessionName":     "GoLang Firefox Test Single",
 			"debug":           "true",
 			"networkLogs":     "true",
