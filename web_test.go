@@ -107,9 +107,6 @@ func TestParallel(test *testing.T) {
 }
 
 func TestFail(test *testing.T) {
-	if os.Getenv("FAIL_TEST") == "" {
-		test.SkipNow()
-	}
 	test.Parallel()
 	asserter := assert.New(test)
 	var buildName = "Demo-GoLang"

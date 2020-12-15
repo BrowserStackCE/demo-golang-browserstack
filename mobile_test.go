@@ -18,13 +18,17 @@ import (
 func TestSingleMobile(test *testing.T) {
 	test.Parallel()
 	asserter := assert.New(test)
+	var buildName = "Demo-GoLang"
+	if os.Getenv("JENKINS_ENV") != "" {
+		buildName = os.Getenv("BROWSERSTACK_BUILD_NAME")
+	}
 	caps := selenium.Capabilities{
 		"bstack:options": map[string]interface{}{
 			"osVersion":    "13",
 			"deviceName":   "iPhone XS",
 			"realMobile":   "true",
 			"projectName":  "BrowserStack GoLang",
-			"buildName":    "Demo-GoLang",
+			"buildName":    buildName,
 			"sessionName":  "GoLang iPhone XS Test Single",
 			"local":        "false",
 			"debug":        "true",
@@ -58,6 +62,13 @@ func TestParallelMobile(test *testing.T) {
 	for _, capability := range capabilities {
 		test.Run(fmt.Sprintf("Running on %s", capability["browserName"]), func(nestedTest *testing.T) {
 			// nestedTest.Parallel() // when enabled this it runs all tests in parallel but always run for the last capability
+			if os.Getenv("JENKINS_ENV") != "" {
+				var options map[string]interface{}
+				tempOptions, _ := capability["bstack:options"]
+				options = tempOptions.(map[string]interface{})
+				options["buildName"] = os.Getenv("BROWSERSTACK_BUILD_NAME")
+				capability["bstack:options"] = options
+			}
 			wd, err := selenium.NewRemote(capability, remoteServerURL)
 			if err != nil {
 				panic(err)

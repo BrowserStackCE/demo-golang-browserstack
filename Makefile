@@ -16,4 +16,4 @@ mobile:
 	go test -v -run Mobile
 
 fail:
-	FAIL_TEST=true go test -v -run TestFail
+	go test -v -run TestFail
