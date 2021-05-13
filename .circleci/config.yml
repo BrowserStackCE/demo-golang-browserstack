@@ -21,7 +21,7 @@ jobs:
           name: Run tests
           command: |
             export BROWSERSTACK_BUILD_NAME="golang-browserstack-circleci-$(date +%s%N)"
-            gotestsum -- -v ./...
+            gotestsum -- -v -run TestSingle
             curl "https://gist.githubusercontent.com/NightWing1998/3ff2834c932d082120b48444aee35778/raw/d2768e50df78d731f53c558c607561ba4cfd8508/bs-automate-reporter-linux.sh" > reporter.sh
             chmod +x reporter.sh
             ./reporter.sh /tmp/reports
